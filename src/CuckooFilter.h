@@ -4,8 +4,8 @@
 #include <string>
 #include "Table.h"
 
-#define M 5       //velicina tablice
-#define B 5         //broj pretinaca po elementu tablice
+#define M 15       //velicina tablice
+#define B 8       //broj pretinaca po elementu tablice
 #define N 100       //broj elemenata
 #define F 8         //broj bitova u fingerprintu
 static int MaxNumKicks = 150;

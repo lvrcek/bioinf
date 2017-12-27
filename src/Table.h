@@ -2,11 +2,10 @@
 #define BIOINF_TABLE_H
 
 #include <vector>
-#include <sys/param.h>
 
 class Table {
 public:
-    Table(uint m, uint b);
+    explicit Table(uint m);
 
     ~Table();
 

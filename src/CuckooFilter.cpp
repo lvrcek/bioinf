@@ -9,7 +9,7 @@ int hashFunction(std::string word) {
     int seed = 877;
     unsigned long hash = 0;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i];
+        hash = (hash * seed) + word[i]; //
     return hash % M;
 }
 
@@ -40,7 +40,7 @@ bool insertEntry(Table &table, std::string word) {
     int i;
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; i++) {
-        random = rand() % 4;
+        random = rand() % 4;    //should randomly select entry from bucket (this would not work)
         int temp = table.getHashTable()[i][random];
         table.getHashTable()[i][random] = f;
         f = temp;

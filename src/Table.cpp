@@ -3,8 +3,8 @@
 #include <vector>
 #include "Table.h"
 
-Table::Table(uint m, uint b) {
-    std::vector<std::vector<int>> matrix(m, std::vector<int>(b, 0));
+Table::Table(uint m) {
+    std::vector<std::vector<int>> matrix(m);
     this->hashTable = matrix;
 };
 
@@ -27,13 +27,15 @@ std::vector<int> &Table::getBucket(int bucketNum) {
 }
 
 void Table::printTableToScreen() {
+    std::cout << "======HASH TABLE=========\n";
     for (auto &i : hashTable) {
         for (int j : i) {
             std::cout << j;
-            std::cout << " ";
+            std::cout << "\t\t";
         }
         std::cout << std::endl;
     }
+    std::cout << "=========================\n";
 }
 
 
