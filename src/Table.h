@@ -5,21 +5,21 @@
 
 class Table {
 public:
-    explicit Table(uint m);
+    explicit Table(unsigned int m);
 
     ~Table();
 
-    int getElementFromTable(uint bucket, uint element);
+    int getElementFromTable(unsigned int bucket, unsigned int element);
 
-    void setElementToTable(uint bucket, uint element, int value);
+    void setElementToTable(unsigned int bucket, unsigned int element, int value);
 
-    std::vector<std::vector<int>> &getHashTable();
+    std::vector<std::vector<int> > &getHashTable();
 
     std::vector<int> &getBucket(int bucketNum);
 
     void printTableToScreen();
 
-    std::vector<std::vector<int>> hashTable;
+    std::vector<std::vector<int> > hashTable;
 };
 
 #endif //BIOINF_TABLE_H
