@@ -3,22 +3,22 @@
 #include <vector>
 #include "Table.h"
 
-Table::Table(uint m) {
-    std::vector<std::vector<int>> matrix(m);
+Table::Table(unsigned int m) {
+    std::vector<std::vector<int> > matrix(m);
     this->hashTable = matrix;
 };
 
 Table::~Table() = default;
 
-int Table::getElementFromTable(uint bucket, uint element) {
+int Table::getElementFromTable(unsigned int bucket, unsigned int element) {
     return hashTable.at(bucket).at(element);
 }
 
-void Table::setElementToTable(uint bucket, uint element, int value) {
+void Table::setElementToTable(unsigned int bucket, unsigned int element, int value) {
     hashTable.at(bucket).at(element) = value;
 }
 
-std::vector<std::vector<int>> &Table::getHashTable() {
+std::vector<std::vector<int> > &Table::getHashTable() {
     return hashTable;
 }
 
@@ -37,6 +37,5 @@ void Table::printTableToScreen() {
     }
     std::cout << "=========================\n";
 }
-
 
 
