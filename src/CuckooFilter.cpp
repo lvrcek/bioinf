@@ -50,9 +50,10 @@ int fingerprint(std::string word) {
 bool insertEntry(Table &table, std::string word) {
     int f = fingerprint(word);
     int i1 = hashFunction(word);
+	//table.printTableToScreen(); // print table
     std::ostringstream convert;
     convert << f;
-    int i2 = i1 ^hashFunction(convert.str());
+    int i2 = (i1 ^hashFunction(convert.str())) % M;
     if (table.getHashTable()[i1].size() < B) {
         table.getHashTable()[i1].push_back(f);
         return true;
@@ -64,19 +65,20 @@ bool insertEntry(Table &table, std::string word) {
     int random = rand() % 2;
     int i;
     i = random == 0 ? i1 : i2;
-    for (int n = 0; n < MaxNumKicks; i++) {
+    for (int n = 0; n < MaxNumKicks; n++) {
         random = rand() % B;    //should randomly select entry from bucket (this would not work)
         int temp = table.getHashTable()[i][random];
         table.getHashTable()[i][random] = f;
         f = temp;
+	convert.str(std::string()); // clean string stream
         convert << f;
-	std::cout<<"vrti se fja "<<n<< " "<<convert.str()<<std::endl;
-        i = i ^ hashFunction(convert.str());
+        i = (i ^ hashFunction(convert.str())) % M;
         if (table.getHashTable()[i].size() < B) {
             table.getHashTable()[i].push_back(f);
             return true;
         }
     }
+	std::cout<<"tablica je puna"<<std::endl;
     return false;
 }
 
