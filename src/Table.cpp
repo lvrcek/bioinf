@@ -4,8 +4,9 @@
 #include "Table.h"
 
 /*
- * A constructor for class Table. Table is initialised as matrix of m rows
- * and m columns. Matrix is implemented as vector containing vectors of integers.
+ * A constructor for class Table. Hash table is declared as vector of m vectors of integers.
+ * Each inner vector represents a bucket, meaning it can store at most same number of elements
+ * as is number of slots in a bucket (given with a constant B).
  */
 
 Table::Table(unsigned int m) {
