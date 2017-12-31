@@ -4,10 +4,10 @@
 #include <string>
 #include "Table.h"
 
-#define M 15       //velicina tablice
-#define B 8       //broj pretinaca po elementu tablice
-#define N 100       //broj elemenata
-#define F 8         //broj bitova u fingerprintu
+#define M 15      //number of buckets in a table
+#define B 8       //number of elements in a single bucket
+#define N 100     //total number of elements to be inserted in a bucket
+#define F 8       //size of fingerprint in bits
 static int MaxNumKicks = 150;
 
 int hashFunction(std::string word);
