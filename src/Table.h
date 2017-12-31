@@ -3,6 +3,11 @@
 
 #include <vector>
 
+/*
+ * Declaration of class Table which represents
+ * a cuckoo table in which fingerprints are stored.
+ */
+
 class Table {
 public:
     explicit Table(unsigned int m);
