@@ -6,6 +6,16 @@
 #include "CuckooFilter.h"
 #include <assert.h>
 
+namespace patch
+{
+    template < typename T > std::string to_string( const T& m )
+    {
+        std::ostringstream stm ;
+        stm << m ;
+        return stm.str() ;
+    }
+}
+
 using namespace std;
 
 int main() {
