@@ -6,6 +6,8 @@
 
 using namespace std;
 
+bool asc (int i,int j) { return (i<j); }
+
 
 class saveBucket{
 
@@ -67,14 +69,48 @@ public:
         else
             return -1;
     }
+
+
+
+    int insertEntry(int index,int fingerprint){
+        vector<int> currentBucket=get(index);
+        vector<int>::iterator it;
+        it=find(currentBucket.begin(),currentBucket.end(),0);
+        if (it != currentBucket.end()){
+            *it=fingerprint;
+            sort(currentBucket.begin(),currentBucket.end(),asc);
+            return findVector(currentBucket);
+        }
+        else
+            return -1;
+}
 };
+
+
 
 
 int main() {
     saveBucket tablica(4,4);
-    //int myints[] = {12,13,14,15};
-    //vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
-    //cout<< tablica.findVector(fifth);
-    tablica.print();
+    int myints[] = {0,0,0,15};
+    vector<int> currentBucket(myints, myints + sizeof(myints) / sizeof(int));
+    cout<< tablica.findVector(currentBucket)<<" ";
+    for(int i=0;i<currentBucket.size();i++)
+        cout<<currentBucket[i]<<" ";
+    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),1));
+    cout<<endl<<tablica.findVector(currentBucket)<<" ";
+    for(int i=0;i<currentBucket.size();i++)
+        cout<<currentBucket[i]<<" ";
+    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),7));
+    cout<<endl<<tablica.findVector(currentBucket)<<" ";
+    for(int i=0;i<currentBucket.size();i++)
+        cout<<currentBucket[i]<<" ";
+    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),3));
+    cout<<endl<<tablica.findVector(currentBucket)<<" ";
+    for(int i=0;i<currentBucket.size();i++)
+        cout<<currentBucket[i]<<" ";
+    cout<<endl<<tablica.insertEntry(tablica.findVector(currentBucket),5);
+
+
+    //tablica.print();
 	return 0;
 }
