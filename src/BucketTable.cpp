@@ -84,6 +84,18 @@ public:
         else
             return -1;
 }
+        int deleteEntry(int index,int fingerprint){
+        vector<int> currentBucket=get(index);
+        vector<int>::iterator it;
+        it=find(currentBucket.begin(),currentBucket.end(),fingerprint);
+        if (it != currentBucket.end()){
+            *it=0;
+            sort(currentBucket.begin(),currentBucket.end(),asc);
+            return findVector(currentBucket);
+        }
+        else
+            return -1;
+}
 };
 
 
