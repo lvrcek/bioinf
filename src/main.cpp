@@ -4,6 +4,7 @@
 #include <vector>
 #include "Table.h"
 #include "CuckooFilter.h"
+#include "FileReader.h"
 #include <assert.h>
 
 namespace patch
@@ -19,6 +20,14 @@ namespace patch
 using namespace std;
 
 int main() {
+
+    Table *table2 = readSimpleCuckooTable(3, 100);
+    table2->printTableToScreen();
+
+    return 0;
+}
+
+int oldMain() {
     auto *table = new Table(M);
 
     cout << "Should print empty table\n";
