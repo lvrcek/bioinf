@@ -24,6 +24,9 @@ int main() {
     Table *table2 = readSimpleCuckooTable(3, 100);
     table2->printTableToScreen();
 
+    //set M to 62500 to try this
+    Table *table3 = readWholeSequence(12);
+
     return 0;
 }
 

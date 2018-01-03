@@ -9,6 +9,6 @@
 
 Table *readSimpleCuckooTable(int k, int numEntries);
 
-Table *readWholeSequence(int k, int sequenceNum);
+Table *readWholeSequence(int k);
 
 #endif //BIOINF_FILEREADER_H
