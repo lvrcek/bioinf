@@ -13,10 +13,10 @@
  */
 
 int hashFunction(std::string word) {
-    int seed = 877;
-    unsigned long hash = 0;
+    int seed = 31;
+    unsigned long hash = 1;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i]; //
+        hash = (hash * seed) + word[i]*word[i];
     return hash % M;
 }
 
@@ -28,11 +28,11 @@ int hashFunction(std::string word) {
 
 //is returning int right?
 int fingerprint(std::string word) {
-    int seed = 293;
+    int seed = 53; 
     unsigned long hash = 0;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i];
-    std::bitset<F> f(hash % 149);
+        hash = (hash * seed) + word[i]*word[i];
+    std::bitset<F> f(hash);
     return (int) f.to_ulong();
 }
 
