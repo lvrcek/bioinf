@@ -2,6 +2,8 @@
 #define BIOINF_TABLE_H
 
 #include <vector>
+#include <bitset>
+#include "Constants.h"
 
 /*
  * Declaration of class Table which represents
@@ -14,17 +16,17 @@ public:
 
     ~Table();
 
-    int getElementFromTable(unsigned int bucket, unsigned int element);
+    std::bitset<F> getElementFromTable(unsigned int bucket, unsigned int element);
 
-    void setElementToTable(unsigned int bucket, unsigned int element, int value);
+    void setElementToTable(unsigned int bucket, unsigned int element, std::bitset<F> value);
 
-    std::vector<std::vector<int> > &getHashTable();
+    std::vector<std::vector<std::bitset<F> > > &getHashTable();
 
-    std::vector<int> &getBucket(int bucketNum);
+    std::vector<std::bitset<F> > &getBucket(int bucketNum);
 
     void printTableToScreen();
 
-    std::vector<std::vector<int> > hashTable;
+    std::vector<std::vector<std::bitset<F> > > hashTable;
 };
 
 #endif //BIOINF_TABLE_H
