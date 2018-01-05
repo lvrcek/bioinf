@@ -1,7 +1,9 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <bitset>
 #include "Table.h"
+#include "Constants.h"
 
 /*
  * A constructor for class Table. Hash table is declared as vector of m vectors of integers.
@@ -10,7 +12,7 @@
  */
 
 Table::Table(unsigned int m) {
-    std::vector<std::vector<int> > matrix(m);
+    std::vector<std::vector<std::bitset<F> > > matrix(m);
     this->hashTable = matrix;
 };
 
@@ -25,7 +27,7 @@ Table::~Table() = default;
  *  It returns fingerprint stored at specified bucket and position in bucket (element).
  */
 
-int Table::getElementFromTable(unsigned int bucket, unsigned int element) {
+std::bitset<F> Table::getElementFromTable(unsigned int bucket, unsigned int element) {
     return hashTable.at(bucket).at(element);
 }
 
@@ -34,7 +36,7 @@ int Table::getElementFromTable(unsigned int bucket, unsigned int element) {
  * It sets fingerprint stored in specified bucket at specified element to a given value.
  */
 
-void Table::setElementToTable(unsigned int bucket, unsigned int element, int value) {
+void Table::setElementToTable(unsigned int bucket, unsigned int element, std::bitset<F> value) {
     hashTable.at(bucket).at(element) = value;
 }
 
@@ -43,7 +45,7 @@ void Table::setElementToTable(unsigned int bucket, unsigned int element, int val
  */
 
 
-std::vector<std::vector<int> > &Table::getHashTable() {
+std::vector<std::vector<std::bitset<F> > > &Table::getHashTable() {
     return hashTable;
 }
 
@@ -53,7 +55,7 @@ std::vector<std::vector<int> > &Table::getHashTable() {
  */
 
 
-std::vector<int> &Table::getBucket(int bucketNum) {
+std::vector<std::bitset<F> > &Table::getBucket(int bucketNum) {
     return hashTable.at(bucketNum);
 }
 
@@ -64,8 +66,9 @@ std::vector<int> &Table::getBucket(int bucketNum) {
 void Table::printTableToScreen() {
     std::cout << "======HASH TABLE=========\n";
     for (auto &i : hashTable) {
-        for (int j : i) {
-            std::cout << j;
+        for (std::bitset<F> j : i) {
+            //std::cout << j.to_ulong();	//print as integers
+	    std::cout << j;			//print as bitsets
             std::cout << "\t\t";
         }
         std::cout << std::endl;
