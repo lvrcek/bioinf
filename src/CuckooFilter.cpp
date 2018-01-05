@@ -4,6 +4,7 @@
 #include <set>
 #include <algorithm>
 #include "CuckooFilter.h"
+#include "Constants.h"
 
 
 /*
@@ -13,10 +14,10 @@
  */
 
 int hashFunction(std::string word) {
-    int seed = 31;
+    int seed = 31; //877
     unsigned long hash = 1;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i]*word[i];
+        hash = (hash * seed) + word[i]*word[i]; //
     return hash % M;
 }
 
@@ -27,13 +28,13 @@ int hashFunction(std::string word) {
 
 
 //is returning int right?
-int fingerprint(std::string word) {
-    int seed = 53; 
+std::bitset<F> fingerprint(std::string word) {
+    int seed = 53; //293
     unsigned long hash = 0;
     for (int i = 0; i < word.length(); i++)
         hash = (hash * seed) + word[i]*word[i];
     std::bitset<F> f(hash);
-    return (int) f.to_ulong();
+    return f;
 }
 
 /*
@@ -48,7 +49,7 @@ int fingerprint(std::string word) {
  */
 
 bool insertEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
+    std::bitset<F> f = fingerprint(word);
     int i1 = hashFunction(word);
 	//table.printTableToScreen(); // print table
     std::ostringstream convert;
@@ -67,7 +68,7 @@ bool insertEntry(Table &table, std::string word) {
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; n++) {
         random = rand() % B;    //should randomly select entry from bucket (this would not work)
-        int temp = table.getHashTable()[i][random];
+        std::bitset<F> temp = table.getHashTable()[i][random];
         table.getHashTable()[i][random] = f;
         f = temp;
 	convert.str(std::string()); // clean string stream
@@ -92,7 +93,7 @@ bool insertEntry(Table &table, std::string word) {
  */
 
 bool lookupEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
+    std::bitset<F> f = fingerprint(word);
     int i1 = hashFunction(word);
     std::ostringstream convert;
     convert << f;
@@ -116,12 +117,12 @@ bool lookupEntry(Table &table, std::string word) {
  */
 
 bool deleteEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
+    std::bitset<F> f = fingerprint(word);
     int i1 = hashFunction(word);
     std::ostringstream convert;
     convert << f;
     int i2 = i1 ^hashFunction(convert.str());
-    std::vector<int>::iterator it =
+    std::vector<std::bitset<F> >::iterator it =
 		std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f);
     if (it != table.getHashTable()[i1].end()) {
         table.getHashTable()[i1].erase(it);
