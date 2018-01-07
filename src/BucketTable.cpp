@@ -121,6 +121,7 @@ int main() {
     for(int i=0;i<currentBucket.size();i++)
         cout<<currentBucket[i]<<" ";
     cout<<endl<<tablica.insertEntry(tablica.findVector(currentBucket),5);
+    cout<<endl<<tablica.deleteEntry(tablica.findVector(currentBucket),3);
 
 
     //tablica.print();
