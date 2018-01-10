@@ -54,7 +54,10 @@ bool insertEntry(Table &table, std::string word) {
 	//table.printTableToScreen(); // print table
     std::ostringstream convert;
     convert << f;
-    int i2 = (i1 ^hashFunction(convert.str())) % M;
+    int i2 = i1 ^hashFunction(convert.str());
+	if(i2 >= M)
+		i2 = i1;
+	//std::cout<<"test1"<<std::endl;
     if (table.getHashTable()[i1].size() < B) {
         table.getHashTable()[i1].push_back(f);
         return true;
@@ -62,18 +65,27 @@ bool insertEntry(Table &table, std::string word) {
         table.getHashTable()[i2].push_back(f);
         return true;
     }
+	//std::cout<<"test2"<<std::endl;
     srand((unsigned) time(NULL));
     int random = rand() % 2;
     int i;
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; n++) {
-        random = rand() % B;    //should randomly select entry from bucket (this would not work)
+        random = rand() % B;
         std::bitset<F> temp = table.getHashTable()[i][random];
         table.getHashTable()[i][random] = f;
         f = temp;
 	convert.str(std::string()); // clean string stream
         convert << f;
-        i = (i ^ hashFunction(convert.str())) % M;
+	/*
+	std::cout<<"izbacuje se element!"<<std::endl;
+	std::cout<<"fingerprint = "<<convert.str()<<" "<<f.to_ulong()<<" "<<f.to_string()<<std::endl;
+	std::cout<<"stari i = "<<i<<std::endl;
+	std::cout<<"hash od fingera kod izbacivanja = "<< hashFunction(convert.str()) <<std::endl;
+	*/
+	if(  (i ^ hashFunction(convert.str())) < M)        
+		i = i ^ hashFunction(convert.str());
+	//std::cout<<"novi i = "<<i<<std::endl;
         if (table.getHashTable()[i].size() < B) {
             table.getHashTable()[i].push_back(f);
             return true;
@@ -98,12 +110,15 @@ bool lookupEntry(Table &table, std::string word) {
     std::ostringstream convert;
     convert << f;
     int i2 = i1 ^hashFunction(convert.str());
+	if(i2 >= M)
+		i2 = i1;
     if (std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f) !=
         table.getHashTable()[i1].end())
         return true;
     if (std::find(table.getHashTable()[i2].begin(), table.getHashTable()[i2].end(), f) !=
         table.getHashTable()[i2].end())
         return true;
+    std::cout<<"nije naden: "<<word<<", hash 1 i 2="<<i1<<" "<<i2<<", fingerprint="<<f.to_ulong()<<std::endl;
     return false;
 }
 
@@ -122,6 +137,8 @@ bool deleteEntry(Table &table, std::string word) {
     std::ostringstream convert;
     convert << f;
     int i2 = i1 ^hashFunction(convert.str());
+	if(i2 >= M)
+		i2 = i1;
     std::vector<std::bitset<F> >::iterator it =
 		std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f);
     if (it != table.getHashTable()[i1].end()) {
