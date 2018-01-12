@@ -51,10 +51,9 @@ std::bitset<F> fingerprint(std::string word) {
 bool insertEntry(Table &table, std::string word) {
     std::bitset<F> f = fingerprint(word);
     int i1 = hashFunction(word);
-	//table.printTableToScreen(); // print table
     std::ostringstream convert;
     convert << f;
-    int i2 = (i1 ^hashFunction(convert.str())) % M;
+    int i2 = i1 ^ hashFunction(convert.str());
     if (table.getHashTable()[i1].size() < B) {
         table.getHashTable()[i1].push_back(f);
         return true;
@@ -67,19 +66,19 @@ bool insertEntry(Table &table, std::string word) {
     int i;
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; n++) {
-        random = rand() % B;    //should randomly select entry from bucket (this would not work)
+        random = rand() % B;
         std::bitset<F> temp = table.getHashTable()[i][random];
         table.getHashTable()[i][random] = f;
         f = temp;
 	convert.str(std::string()); // clean string stream
-        convert << f;
-        i = (i ^ hashFunction(convert.str())) % M;
+        convert << f;    
+	i = i ^ hashFunction(convert.str());
+	//std::cout<<"novi i = "<<i<<std::endl;
         if (table.getHashTable()[i].size() < B) {
             table.getHashTable()[i].push_back(f);
             return true;
         }
     }
-	std::cout<<"tablica je puna"<<std::endl;
     return false;
 }
 
