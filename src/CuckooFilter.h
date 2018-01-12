@@ -9,7 +9,7 @@
 
 static int MaxNumKicks = 150;
 
-int hashFunction(std::string word);
+size_t hashFunction(std::string word);
 
 std::bitset<F> fingerprint(std::string word);
 

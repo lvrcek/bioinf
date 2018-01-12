@@ -3,7 +3,6 @@
 #include <vector>
 #include <bitset>
 #include "Table.h"
-#include "Constants.h"
 
 /*
  * A constructor for class Table. Hash table is declared as vector of m vectors of integers.
@@ -11,9 +10,8 @@
  * as is number of slots in a bucket (given with a constant B).
  */
 
-Table::Table(unsigned int m) {
-    std::vector<std::vector<std::bitset<F> > > matrix(m);
-    this->hashTable = matrix;
+Table::Table() {
+    this->hashTable.resize(M);
 };
 
 /*
@@ -27,8 +25,8 @@ Table::~Table() = default;
  *  It returns fingerprint stored at specified bucket and position in bucket (element).
  */
 
-std::bitset<F> Table::getElementFromTable(unsigned int bucket, unsigned int element) {
-    return hashTable.at(bucket).at(element);
+std::bitset<F> Table::getElementFromTable(unsigned int bucketIndex, unsigned int elementIndex) {
+    return hashTable.at(bucketIndex).at(elementIndex);
 }
 
 /*
@@ -57,6 +55,14 @@ std::vector<std::vector<std::bitset<F> > > &Table::getHashTable() {
 
 std::vector<std::bitset<F> > &Table::getBucket(int bucketNum) {
     return hashTable.at(bucketNum);
+}
+
+size_t Table::getBucketSize(int bucketNum) {
+    return hashTable.at(bucketNum).size();
+}
+
+void Table::addElementToBucket(std::bitset<F> element, int bucketNum) {
+    hashTable.at(bucketNum).push_back(element);
 }
 
 /*

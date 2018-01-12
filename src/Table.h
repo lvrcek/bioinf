@@ -12,17 +12,21 @@
 
 class Table {
 public:
-    explicit Table(unsigned int m);
+    explicit Table();
 
     ~Table();
 
-    std::bitset<F> getElementFromTable(unsigned int bucket, unsigned int element);
+    std::bitset<F> getElementFromTable(unsigned int bucketIndex, unsigned int elementIndex);
 
     void setElementToTable(unsigned int bucket, unsigned int element, std::bitset<F> value);
 
     std::vector<std::vector<std::bitset<F> > > &getHashTable();
 
     std::vector<std::bitset<F> > &getBucket(int bucketNum);
+
+    size_t getBucketSize(int bucketNum);
+
+    void addElementToBucket(std::bitset<F> element, int bucketNum);
 
     void printTableToScreen();
 
