@@ -65,7 +65,16 @@ int saveBucket::findVector(vector<int> target){
             return -1;
      };
 
-
+int saveBucket::lookupEntry(int index,int fingerprint){
+    vector<int> currentBucket=get(index);
+    vector<int>::iterator it;
+    it=find(currentBucket.begin(),currentBucket.end(),0);
+    if (it != currentBucket.end()){
+        return (it-currentBucket.begin());
+    }
+    else
+        return -1;
+};
 
 int saveBucket::insertEntry(int index,int fingerprint){
         vector<int> currentBucket=get(index);
