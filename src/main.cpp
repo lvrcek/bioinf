@@ -2,68 +2,68 @@
 #include <bitset>
 #include <sstream>
 #include <vector>
+#include <chrono>
 #include "Table.h"
 #include "CuckooFilter.h"
-#include <assert.h>
+#include "Table.cpp"
+#include "CuckooFilter.cpp"
 
-namespace patch
-{
-    template < typename T > std::string to_string( const T& m )
-    {
-        std::ostringstream stm ;
-        stm << m ;
-        return stm.str() ;
+namespace patch {
+    template<typename T>
+    std::string to_string(const T &m) {
+        std::ostringstream stm;
+        stm << m;
+        return stm.str();
     }
 }
 
 using namespace std;
 
 int main() {
-    auto *table = new Table(M);
 
-    cout << "Should print empty table\n";
-    table->printTableToScreen();
+    auto start = std::chrono::high_resolution_clock::now();
 
-    cout << "Add one entry\n";
-    insertEntry(*table, "A");
-    table->printTableToScreen();
+    auto *table = new Table();
 
-    cout << "Add A 3 more times\n";
-    insertEntry(*table, "A");
-    insertEntry(*table, "A");
-    insertEntry(*table, "A");
-    table->printTableToScreen();
+    int totalItems = 1000000;
 
-    cout << "Add 4th A - should go to another bucket\n";
-    insertEntry(*table, "A");
-    table->printTableToScreen();
-
-    cout << "Remove A - should remove from original bucket\n";
-    deleteEntry(*table, "A");
-    table->printTableToScreen();
-
-    cout << "Looking up A : " << lookupEntry(*table, "A") << "\n";
-
-    cout << "Should remove all A entries\n";
-    deleteEntry(*table, "A");
-    deleteEntry(*table, "A");
-    deleteEntry(*table, "A");
-    deleteEntry(*table, "A");
-    cout << "Looking up A : " << lookupEntry(*table, "A") << "\n";
-    table->printTableToScreen();
-
-    for (size_t i = 0; i < 100; i++) {
-        if (!insertEntry(*table, std::to_string(i))) {
-            break;
+    for (int i = 0; i < totalItems; i++) {
+        if (!insertEntry(*table, patch::to_string(i))) {
+            std::cout << "Error while inserting elements!!" << i << std::endl;
+            return 1;
         }
     }
 
-    table->printTableToScreen();
+    std::cout << "Inserted all 1 000 000 elements!" << std::endl;
 
-    for (size_t i = 0; i < 100; i++) {
-        assert(lookupEntry(*table, std::to_string(i)));
+    for (int i = 0; i < totalItems; i++) {
+        bool result = lookupEntry(*table, patch::to_string(i));
+        if (!result) {
+            std::cout << "Element" << i << "not found!" << std::endl;
+            return 1;
+        }
     }
 
-    delete (table);
+    std::cout << "Asserted all 1 000 000 elements!" << std::endl;
+
+    int total_queries = 0;
+    int false_queries = 0;
+    for (int i = totalItems; i < 2 * totalItems; i++) {
+        if (lookupEntry(*table, patch::to_string(i))) {
+            false_queries++;
+        }
+        total_queries++;
+    }
+
+    // Output the measured false positive rate
+    std::cout << "false positive rate is " << 100.0 * false_queries / total_queries << "%\n";
+
+    auto finish = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = finish - start;
+
+    std::cout << "Elapsed time is " << elapsed.count() << std::endl;
+
+   // free(table);
     return 0;
 }

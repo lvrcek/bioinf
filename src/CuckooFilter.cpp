@@ -11,12 +11,11 @@
  * and returns integer value of bucket in which
  * it's fingerprint will be stored
  */
-
-int hashFunction(std::string word) {
-    int seed = 877;
-    unsigned long hash = 0;
+size_t hashFunction(std::string word) {
+    int seed = 31; //877
+    unsigned long hash = 1;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i]; //
+        hash = (hash * seed) + word[i] * word[i]; //
     return hash % M;
 }
 
@@ -27,13 +26,13 @@ int hashFunction(std::string word) {
 
 
 //is returning int right?
-int fingerprint(std::string word) {
-    int seed = 293;
+std::bitset<F> fingerprint(std::string word) {
+    int seed = 53; //293
     unsigned long hash = 0;
     for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i];
-    std::bitset<F> f(hash % 149);
-    return (int) f.to_ulong();
+        hash = (hash * seed) + word[i] * word[i];
+    std::bitset<F> f(hash);
+    return f;
 }
 
 /*
@@ -48,37 +47,30 @@ int fingerprint(std::string word) {
  */
 
 bool insertEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
-    int i1 = hashFunction(word);
-	//table.printTableToScreen(); // print table
-    std::ostringstream convert;
-    convert << f;
-    int i2 = (i1 ^hashFunction(convert.str())) % M;
-    if (table.getHashTable()[i1].size() < B) {
-        table.getHashTable()[i1].push_back(f);
+    std::bitset<F> f = fingerprint(word);
+    size_t i1 = hashFunction(word);
+    size_t i2 = i1 ^hashFunction(f.to_string());
+    if (table.getBucketSize(i1) < B) {
+        table.addElementToBucket(f, i1);
         return true;
-    } else if (table.getHashTable()[i2].size() < B) {
-        table.getHashTable()[i2].push_back(f);
+    } else if (table.getBucketSize(i2) < B) {
+        table.addElementToBucket(f, i2);
         return true;
     }
-    srand((unsigned) time(NULL));
-    int random = rand() % 2;
-    int i;
+    int random = std::rand() % 2;
+    size_t i;
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; n++) {
-        random = rand() % B;    //should randomly select entry from bucket (this would not work)
-        int temp = table.getHashTable()[i][random];
-        table.getHashTable()[i][random] = f;
+        random = std::rand() % table.getBucketSize(i);
+        std::bitset<F> temp = table.getElementFromTable(i, random);
+        table.setElementToTable(i, random, f);
         f = temp;
-	convert.str(std::string()); // clean string stream
-        convert << f;
-        i = (i ^ hashFunction(convert.str())) % M;
-        if (table.getHashTable()[i].size() < B) {
-            table.getHashTable()[i].push_back(f);
+        i = i ^ hashFunction(f.to_string());
+        if (table.getBucketSize(i) < B) {
+            table.addElementToBucket(f, i);
             return true;
         }
     }
-	std::cout<<"tablica je puna"<<std::endl;
     return false;
 }
 
@@ -92,16 +84,14 @@ bool insertEntry(Table &table, std::string word) {
  */
 
 bool lookupEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
-    int i1 = hashFunction(word);
-    std::ostringstream convert;
-    convert << f;
-    int i2 = i1 ^hashFunction(convert.str());
-    if (std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f) !=
-        table.getHashTable()[i1].end())
+    std::bitset<F> f = fingerprint(word);
+    size_t i1 = hashFunction(word);
+    size_t i2 = i1 ^hashFunction(f.to_string());
+    if (std::find(table.getBucket(i1).begin(), table.getBucket(i1).end(), f) !=
+        table.getBucket(i1).end())
         return true;
-    if (std::find(table.getHashTable()[i2].begin(), table.getHashTable()[i2].end(), f) !=
-        table.getHashTable()[i2].end())
+    if (std::find(table.getBucket(i2).begin(), table.getBucket(i2).end(), f) !=
+        table.getBucket(i2).end())
         return true;
     return false;
 }
@@ -116,13 +106,13 @@ bool lookupEntry(Table &table, std::string word) {
  */
 
 bool deleteEntry(Table &table, std::string word) {
-    int f = fingerprint(word);
-    int i1 = hashFunction(word);
+    std::bitset<F> f = fingerprint(word);
+    size_t i1 = hashFunction(word);
     std::ostringstream convert;
     convert << f;
-    int i2 = i1 ^hashFunction(convert.str());
-    std::vector<int>::iterator it =
-		std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f);
+    size_t i2 = i1 ^hashFunction(convert.str());
+    std::vector<std::bitset<F> >::iterator it =
+            std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f);
     if (it != table.getHashTable()[i1].end()) {
         table.getHashTable()[i1].erase(it);
         return true;

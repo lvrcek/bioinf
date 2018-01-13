@@ -2,29 +2,44 @@
 #define BIOINF_TABLE_H
 
 #include <vector>
+#include <bitset>
+#include "Constants.h"
+#include <set>
+#include "BucketTable.cpp"
+
+
 
 /*
  * Declaration of class Table which represents
  * a cuckoo table in which fingerprints are stored.
  */
 
+
+
 class Table {
 public:
-    explicit Table(unsigned int m);
+    explicit Table();
 
     ~Table();
 
-    int getElementFromTable(unsigned int bucket, unsigned int element);
+    int getElementFromTable(unsigned int bucketIndex, unsigned int elementIndex);
 
     void setElementToTable(unsigned int bucket, unsigned int element, int value);
 
-    std::vector<std::vector<int> > &getHashTable();
+    std::vector<int> &getHashTable();
 
-    std::vector<int> &getBucket(int bucketNum);
+    std::vector<int> getBucket(int bucketNum);
+
+    size_t getBucketSize(int bucketNum);
+
+    void addElementToBucket(int element, int bucketNum);
 
     void printTableToScreen();
 
-    std::vector<std::vector<int> > hashTable;
+    std::vector<int> hashTable;
+
+    saveBucket cheatSheet;
+
 };
 
 #endif //BIOINF_TABLE_H

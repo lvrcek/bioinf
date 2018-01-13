@@ -102,33 +102,29 @@ int saveBucket::deleteEntry(int index,int fingerprint){
             return -1;
 };
 
+int saveBucket::changeEntry(int index,int fingerprint, int value){
+        vector<int> currentBucket=get(index);
+        vector<int>::iterator it;
+        it=find(currentBucket.begin(),currentBucket.end(),fingerprint);
+        if (it != currentBucket.end()){
+            *it=value;
+            sort(currentBucket.begin(),currentBucket.end(),asc);
+            return findVector(currentBucket);
+        }
+        else
+            return -1;
+};
 
-
-
-
-int main() {
-    saveBucket tablica(4,4);
-    int myints[] = {0,0,0,15};
-    vector<int> currentBucket(myints, myints + sizeof(myints) / sizeof(int));
-    cout<< tablica.findVector(currentBucket)<<" ";
-    for(int i=0;i<currentBucket.size();i++)
-        cout<<currentBucket[i]<<" ";
-    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),1));
-    cout<<endl<<tablica.findVector(currentBucket)<<" ";
-    for(int i=0;i<currentBucket.size();i++)
-        cout<<currentBucket[i]<<" ";
-    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),7));
-    cout<<endl<<tablica.findVector(currentBucket)<<" ";
-    for(int i=0;i<currentBucket.size();i++)
-        cout<<currentBucket[i]<<" ";
-    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),8));
-    cout<<endl<<tablica.findVector(currentBucket)<<" ";
-    for(int i=0;i<currentBucket.size();i++)
-        cout<<currentBucket[i]<<" ";
-    cout<<endl<<tablica.insertEntry(tablica.findVector(currentBucket),5);
-    cout<<endl<<tablica.deleteEntry(tablica.findVector(currentBucket),8);
-
-
-    //tablica.print();
-	return 0;
+int saveBucket::countZeroes(int index){
+    vector<int> currentBucket=get(index);
+    return std::count (currentBucket.begin(), currentBucket.end(), 0);
 }
+
+void saveBucket::printBucket(int index){
+    vector<int> bucket=get(index);
+    for(int i=0;i<bucket.size();i++){
+        cout<<bucket[i]<<" ";
+    }
+    cout<<endl;
+}
+
