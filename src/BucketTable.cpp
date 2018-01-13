@@ -3,18 +3,16 @@
 #include <algorithm>
 #include <set>
 #include <math.h>
+#include "BucketTable.h"
 
 using namespace std;
 
 bool asc (int i,int j) { return (i<j); }
 
+vector<vector<int> > table;
+set< vector<int> > global;
 
-class saveBucket{
-
-    vector<vector<int> > table;
-    set< vector<int> > global;
-
-    void findOneCombination(vector<int> series, int r, int howFarInSeries, vector<int> tmp){
+void saveBucket::findOneCombination(vector<int> series, int r, int howFarInSeries, vector<int> tmp){
         if(tmp.size() == r){
             global.insert(tmp);
             tmp.clear();
@@ -25,11 +23,9 @@ class saveBucket{
         findOneCombination(series, r, howFarInSeries+1, tmp);
         tmp.push_back(series[howFarInSeries]);
         findOneCombination(series, r, howFarInSeries+1, tmp);
-    }
+    };
 
-
-public:
-    saveBucket(int bucketSize, int fingerprintSize){
+saveBucket::saveBucket(int bucketSize, int fingerprintSize){
         vector<int> bag;
         for(int i =0;i<bucketSize-1;i++)
             bag.push_back(0);
@@ -42,37 +38,38 @@ public:
             table.push_back(*it);
         }
 
-    }
+    };
 
-    void print(){
+void saveBucket::print(){
         for(int i=0;i<table.size();i++){
             for(int j=0;j<table[i].size();j++){
                 cout<<table[i][j]<<" ";
             }
             cout<<endl;
         }
-    }
+    };
 
-    vector<int> get(int index){
+vector<int> saveBucket::get(int index){
 //        if(index>=table.size()){
 //            cout <<"Out of bounds"<<endl;
 //            return nullptr;
 //        }
 //        else
         return table[index];
-    }
-    int findVector(vector<int> target){
+};
+
+int saveBucket::findVector(vector<int> target){
         vector<vector<int> >::iterator it;
         it=find(table.begin(),table.end(),target);
         if (it != table.end())
             return (it-table.begin());
         else
             return -1;
-    }
+     };
 
 
 
-    int insertEntry(int index,int fingerprint){
+int saveBucket::insertEntry(int index,int fingerprint){
         vector<int> currentBucket=get(index);
         vector<int>::iterator it;
         it=find(currentBucket.begin(),currentBucket.end(),0);
@@ -83,8 +80,9 @@ public:
         }
         else
             return -1;
-}
-        int deleteEntry(int index,int fingerprint){
+};
+
+int saveBucket::deleteEntry(int index,int fingerprint){
         vector<int> currentBucket=get(index);
         vector<int>::iterator it;
         it=find(currentBucket.begin(),currentBucket.end(),fingerprint);
@@ -95,8 +93,8 @@ public:
         }
         else
             return -1;
-}
 };
+
 
 
 

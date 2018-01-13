@@ -9,6 +9,8 @@
  * as is number of slots in a bucket (given with a constant B).
  */
 
+
+
 Table::Table(unsigned int m) {
     std::vector<std::vector<int> > matrix(m);
     this->hashTable = matrix;
