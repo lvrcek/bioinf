@@ -13,21 +13,21 @@
 
 class FileReader {
 
-    std::string fileName = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
+    std::string file_name = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
 
 public:
 
     explicit FileReader(std::string file) {
-        fileName = file;
+        file_name = file;
     }
 
-    bool readSimpleCuckooTable(int k, int numEntries, CuckooFilterNew *filter);
+    bool ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter);
 };
 
-bool FileReader::readSimpleCuckooTable(int k, int numEntries, CuckooFilterNew *filter) {
-    std::ifstream input(fileName);
+bool FileReader::ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter) {
+    std::ifstream input(file_name);
     if (!input.good()) {
-        std::cout << "Error opening '" << fileName << "'." << std::endl;
+        std::cout << "Error opening '" << file_name << "'." << std::endl;
         return false;
     }
 
@@ -43,20 +43,18 @@ bool FileReader::readSimpleCuckooTable(int k, int numEntries, CuckooFilterNew *f
         if (line[0] == '>') continue;
         //std::cout << line <<std::endl;
         content += line;
-        if (content.length() > numEntries + k - 1) break;
+        if (content.length() > num_entries + k - 1) break;
     }
 
-    //std::cerr << content.length() << std::endl;
-
-    if (content.length() - k + 1 < numEntries) {
+    if (content.length() - k + 1 < num_entries) {
         std::cout << "Not enough entries in first sequence! Returning empty table." << std::endl;
         return false;
     }
 
     bool success;
-    for (int i = 0; i < numEntries; i++) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
-        success = filter->insertEntry(entry);
+        success = filter->InsertEntry(entry);
         if (!success) {
             std::cout << "Error while inserting entry number " << i << " to table. Returning current table."
                       << std::endl;
@@ -66,9 +64,9 @@ bool FileReader::readSimpleCuckooTable(int k, int numEntries, CuckooFilterNew *f
 
     std::cout << "All entries successfully added to table." << std::endl;
 
-    for (int i = 0; i < numEntries; i++) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
-        success = filter->lookupEntry(entry);
+        success = filter->LookupEntry(entry);
         if (!success) {
             std::cout << "Error while looking up entry " << i << ". Element " << entry << " not found." << std::endl;
             return false;

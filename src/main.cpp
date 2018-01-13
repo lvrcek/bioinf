@@ -20,10 +20,10 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
     //  CuckooFilterNew *fileCuckoo = new CuckooFilterNew();
-    //std::string fileName = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
-    //FileReader *reader = new FileReader(fileName);
+    //std::string file_name = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
+    //FileReader *reader = new FileReader(file_name);
 
-    //  reader->readSimpleCuckooTable(20,1000000,fileCuckoo);
+    //  reader->ReadSimpleCuckooTable(20,1000000,fileCuckoo);
     //  reader->assertSimpleCuckooTable(20,1000000,fileCuckoo);
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     auto startInsert = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < totalItems; i++) {
-        if (!cuckoo->insertEntry(std::to_string(i))) {
+        if (!cuckoo->InsertEntry(std::to_string(i))) {
             std::cout << "Error while inserting elements!!" << i << std::endl;
             return 1;
         }
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     auto startLookup = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < totalItems; i++) {
-        if (!cuckoo->lookupEntry(std::to_string(i))) {
+        if (!cuckoo->LookupEntry(std::to_string(i))) {
             std::cout << "Error while looking up elements!!" << i << std::endl;
             return 1;
         }
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     int total_queries = 0;
     int false_queries = 0;
     for (int i = totalItems; i < 2 * totalItems; i++) {
-        if (cuckoo->lookupEntry(std::to_string(i))) {
+        if (cuckoo->LookupEntry(std::to_string(i))) {
             false_queries++;
         }
         total_queries++;
@@ -101,7 +101,7 @@ int oldmain() {
 
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < totalItems; i++) {
-        if (!insertEntry(table, std::to_string(i))) {
+        if (!InsertEntry(table, std::to_string(i))) {
             std::cout << "Error while inserting elements!!" << i << std::endl;
             return 1;
         }
@@ -128,7 +128,7 @@ int oldmain() {
     int total_queries = 0;
     int false_queries = 0;
     for (int i = totalItems; i < 2 * totalItems; i++) {
-        if (lookupEntry(table, std::to_string(i))) {
+        if (LookupEntry(table, std::to_string(i))) {
             false_queries++;
         }
         total_queries++;
