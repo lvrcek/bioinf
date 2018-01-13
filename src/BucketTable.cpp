@@ -9,8 +9,6 @@ using namespace std;
 
 bool asc (int i,int j) { return (i<j); }
 
-vector<vector<int> > table;
-set< vector<int> > global;
 
 void saveBucket::findOneCombination(vector<int> series, int r, int howFarInSeries, vector<int> tmp){
         if(tmp.size() == r){
@@ -114,12 +112,12 @@ int main() {
     cout<<endl<<tablica.findVector(currentBucket)<<" ";
     for(int i=0;i<currentBucket.size();i++)
         cout<<currentBucket[i]<<" ";
-    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),3));
+    currentBucket=tablica.get(tablica.insertEntry(tablica.findVector(currentBucket),8));
     cout<<endl<<tablica.findVector(currentBucket)<<" ";
     for(int i=0;i<currentBucket.size();i++)
         cout<<currentBucket[i]<<" ";
     cout<<endl<<tablica.insertEntry(tablica.findVector(currentBucket),5);
-    cout<<endl<<tablica.deleteEntry(tablica.findVector(currentBucket),3);
+    cout<<endl<<tablica.deleteEntry(tablica.findVector(currentBucket),8);
 
 
     //tablica.print();
