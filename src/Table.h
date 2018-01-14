@@ -36,6 +36,10 @@ public:
 
     void printTableToScreen();
 
+    int lookUpEntry(int element, int bucketIndex);
+
+    void deleteEntry(int element, int bucketIndex);
+
     std::vector<int> hashTable;
 
     saveBucket cheatSheet;

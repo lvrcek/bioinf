@@ -27,7 +27,7 @@ saveBucket::saveBucket(int bucketSize, int fingerprintSize){
         vector<int> bag;
         for(int i =0;i<bucketSize-1;i++)
             bag.push_back(0);
-        for(int i =0;i<pow(2,fingerprintSize);i++)
+        for(int i =0;i<pow(2,fingerprintSize)+1;i++)
             bag.push_back(i);
         vector<int> tmp;
        	findOneCombination(bag, bucketSize, 0, tmp);

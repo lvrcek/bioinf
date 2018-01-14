@@ -6,6 +6,7 @@
 #include "CuckooFilter.h"
 
 
+
 /*
  * A hash function which takes a word (string)
  * and returns integer value of bucket in which
@@ -51,10 +52,10 @@ bool insertEntry(Table &table, std::string word) {
     size_t i1 = hashFunction(word);
     size_t i2 = i1 ^hashFunction(f.to_string());
     if (table.getBucketSize(i1) < B) {
-        table.addElementToBucket(f, i1);
+        table.addElementToBucket(f.to_ulong(), i1);
         return true;
     } else if (table.getBucketSize(i2) < B) {
-        table.addElementToBucket(f, i2);
+        table.addElementToBucket(f.to_ulong(), i2);
         return true;
     }
     int random = std::rand() % 2;
@@ -62,12 +63,12 @@ bool insertEntry(Table &table, std::string word) {
     i = random == 0 ? i1 : i2;
     for (int n = 0; n < MaxNumKicks; n++) {
         random = std::rand() % table.getBucketSize(i);
-        std::bitset<F> temp = table.getElementFromTable(i, random);
-        table.setElementToTable(i, random, f);
+        std::bitset<F> temp(table.getElementFromTable(i, random));
+        table.setElementToTable(i, random, f.to_ulong());
         f = temp;
         i = i ^ hashFunction(f.to_string());
         if (table.getBucketSize(i) < B) {
-            table.addElementToBucket(f, i);
+            table.addElementToBucket(f.to_ulong(), i);
             return true;
         }
     }
@@ -87,10 +88,10 @@ bool lookupEntry(Table &table, std::string word) {
     std::bitset<F> f = fingerprint(word);
     size_t i1 = hashFunction(word);
     size_t i2 = i1 ^hashFunction(f.to_string());
-    if (std::find(table.getBucket(i1).begin(), table.getBucket(i1).end(), f) !=
+    if (std::find(table.getBucket(i1).begin(), table.getBucket(i1).end(), f.to_ulong()) !=
         table.getBucket(i1).end())
         return true;
-    if (std::find(table.getBucket(i2).begin(), table.getBucket(i2).end(), f) !=
+    if (std::find(table.getBucket(i2).begin(), table.getBucket(i2).end(), f.to_ulong()) !=
         table.getBucket(i2).end())
         return true;
     return false;
@@ -111,15 +112,14 @@ bool deleteEntry(Table &table, std::string word) {
     std::ostringstream convert;
     convert << f;
     size_t i2 = i1 ^hashFunction(convert.str());
-    std::vector<std::bitset<F> >::iterator it =
-            std::find(table.getHashTable()[i1].begin(), table.getHashTable()[i1].end(), f);
-    if (it != table.getHashTable()[i1].end()) {
-        table.getHashTable()[i1].erase(it);
+    int index = table.lookUpEntry(i1,f.to_ulong());
+    if (index!=-1) {
+        table.deleteEntry(f.to_ulong(),i1);
         return true;
     }
-    it = std::find(table.getHashTable()[i2].begin(), table.getHashTable()[i2].end(), f);
-    if (it != table.getHashTable()[i2].end()) {
-        table.getHashTable()[i2].erase(it);
+    index = table.lookUpEntry(i2, f.to_ulong());
+    if (index!=i2) {
+        table.deleteEntry(f.to_ulong(),i2);
         return true;
     }
     return false;

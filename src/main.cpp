@@ -3,8 +3,6 @@
 #include <sstream>
 #include <vector>
 #include <chrono>
-#include "Table.h"
-#include "CuckooFilter.h"
 #include "Table.cpp"
 #include "CuckooFilter.cpp"
 
@@ -25,16 +23,18 @@ int main() {
 
     auto *table = new Table();
 
-    int totalItems = 1000000;
+    int totalItems = 10000;
 
     for (int i = 0; i < totalItems; i++) {
+
         if (!insertEntry(*table, patch::to_string(i))) {
             std::cout << "Error while inserting elements!!" << i << std::endl;
             return 1;
         }
     }
 
-    std::cout << "Inserted all 1 000 000 elements!" << std::endl;
+
+    std::cout << "Inserted all 40 000 elements!" << std::endl;
 
     for (int i = 0; i < totalItems; i++) {
         bool result = lookupEntry(*table, patch::to_string(i));

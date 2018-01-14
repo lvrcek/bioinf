@@ -14,7 +14,7 @@
  */
 
 
-Table::Table() : cheatSheet(6,4) {
+Table::Table() : cheatSheet(B,F) {
     this->hashTable.resize(M);
 };
 
@@ -77,6 +77,14 @@ void Table::addElementToBucket(int element, int bucketNum) {
 
 }
 
+int Table::lookUpEntry(int element, int bucketIndex){
+    return cheatSheet.lookupEntry(bucketIndex, element);
+}
+
+void Table::deleteEntry(int element, int bucketIndex){
+    hashTable.at(bucketIndex)=cheatSheet.deleteEntry(bucketIndex,element);
+}
+
 /*
  * Function which prints a hash table to the screen.
  */
@@ -91,19 +99,19 @@ void Table::printTableToScreen() {
 }
 
 
-
-int main() {
-    int myints[] = {0,0,0,15};
-    Table tablica;
-
-    tablica.addElementToBucket(1,100);
-    tablica.addElementToBucket(1,110);
-    tablica.addElementToBucket(1,120);
-    tablica.addElementToBucket(1,130);
-    tablica.addElementToBucket(1,140);
-    tablica.addElementToBucket(1,299);
-    tablica.addElementToBucket(3,299);
-    tablica.setElementToTable(299,3,5);
+//
+//int main() {
+//    int myints[] = {0,0,0,15};
+//    Table tablica;
+//
+//    tablica.addElementToBucket(1,100);
+//    tablica.addElementToBucket(1,110);
+//    tablica.addElementToBucket(1,120);
+//    tablica.addElementToBucket(1,130);
+//    tablica.addElementToBucket(1,140);
+//    tablica.addElementToBucket(1,299);
+//    tablica.addElementToBucket(3,299);
+//    tablica.setElementToTable(299,3,5);
 
 
 //    for(int i =0;i<tablica.hashTable.size();i++){
@@ -116,7 +124,7 @@ int main() {
 
     //cout<<tablica.getElementFromTable(299,3);
 
-    tablica.printTableToScreen();
+    //tablica.printTableToScreen();
 
 //    std::vector<int> currentBucket(myints, myints + sizeof(myints) / sizeof(int));
 //    cout<< cheatSheet.findVector(currentBucket)<<" ";
@@ -140,5 +148,5 @@ int main() {
 //
 //    //cheatSheet.print();
 //	return 0;
-}
+//}
 
