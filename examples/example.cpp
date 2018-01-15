@@ -12,11 +12,10 @@ int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
     CuckooFilterNew *cuckoo = new CuckooFilterNew();
-    size_t total_items = 1000000;
 
     auto start_insert = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < total_items; i++) {
+    for (int i = N; i--;) {
         if (!cuckoo->InsertEntry(std::to_string(i))) {
             std::cout << "Error while inserting elements!! Failed on: " << i << std::endl;
             return 1;
@@ -29,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     auto start_lookup = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < total_items; i++) {
+    for (int i = N; i--;) {
         if (!cuckoo->LookupEntry(std::to_string(i))) {
             std::cout << "Error while looking up elements!!" << i << std::endl;
             return 1;
@@ -42,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     int total_queries = 0;
     int false_queries = 0;
-    for (int i = total_items; i < 2 * total_items; i++) {
+    for (int i = N; i < (N<<1); i++) {
         if (cuckoo->LookupEntry(std::to_string(i))) {
             false_queries++;
         }
