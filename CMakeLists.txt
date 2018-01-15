@@ -1,8 +1,23 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 2.8)
 project(bioinf)
 
-set(CMAKE_CXX_STANDARD 14)
-set(SOURCE_FILES src/constants.h src/cuckoo.h src/vector_table.h src/file_reader.h)
+#set(CMAKE_CXX_STANDARD 14)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+set(SOURCE_FILES src/cuckoo.h src/vector_table.h src/file_reader.h)
+
+
+set (Cuckoo_M "(1<<19)")
+set (Cuckoo_B 8)
+set (Cuckoo_N 1000000)
+set (Cuckoo_F 8)
+
+configure_file(
+	"${PROJECT_SOURCE_DIR}/src/constants.h.in"
+	"${PROJECT_BINARY_DIR}/src/constants.h"
+)
+
 
 add_executable(test_file examples/example_file.cpp)
 add_executable(test_int examples/example.cpp)
