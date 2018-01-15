@@ -1,0 +1,11 @@
+#ifndef BIOINF_CONSTANTS_H
+#define BIOINF_CONSTANTS_H
+
+
+#define M @Cuckoo_M@	//number of buckets in a table
+#define B @Cuckoo_B@	//number of slots in a single bucket
+#define N @Cuckoo_N@	//total number of elements to be inserted in a bucket
+#define F @Cuckoo_F@	//size of fingerprint in bits
+
+
+#endif //BIOINF_CONSTANTS_H
