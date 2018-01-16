@@ -11,9 +11,13 @@
 #include "cuckoo.h"
 
 
+/*
+ *  A class used for reading genome of E. coli from a file Ecoli.fa.
+ */
+
 class FileReader {
 
-    std::string file_name = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
+    std::string file_name = "src/resources/Ecoli.fa";
 
 public:
 
@@ -21,10 +25,21 @@ public:
         file_name = file;
     }
 
-    bool ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter);
+    bool ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNew *filter);
 };
 
-bool FileReader::ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter) {
+
+/*
+ *  A function which takes three arguments: size of k-meres which will be read,
+ *  number of k-meres which will be read and pointer to cuckoo filter.
+ *  First, this function reads the content of a give file specified in file_name
+ *  and stores it in the variable content. Afterwards, it inserts k-meres from
+ *  variable content to the cuckoo filter and then it checks if all k-meres can be
+ *  found in the filter.  Returns true if all inserted k-meres are found, and false
+ *  if otherwise.
+ */
+
+bool FileReader::ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNew *filter) {
     std::ifstream input(file_name);
     if (!input.good()) {
         std::cout << "Error opening '" << file_name << "'." << std::endl;
@@ -52,7 +67,7 @@ bool FileReader::ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *
     }
 
     bool success;
-    for (int i = 0; i < num_entries; i++) {
+    for (size_t i = num_entries; i--;) {
         std::string entry = content.substr(i, k);
         success = filter->InsertEntry(entry);
         if (!success) {
@@ -64,7 +79,7 @@ bool FileReader::ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *
 
     std::cout << "All entries successfully added to table." << std::endl;
 
-    for (int i = 0; i < num_entries; i++) {
+    for (size_t i = num_entries; i--;) {
         std::string entry = content.substr(i, k);
         success = filter->LookupEntry(entry);
         if (!success) {
