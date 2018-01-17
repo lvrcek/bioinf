@@ -17,7 +17,7 @@
 
 class FileReader {
 
-    std::string file_name = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
+    std::string file_name = "resources/Ecoli.fa";
     std::string fp_file_name = "";
 
 public:
