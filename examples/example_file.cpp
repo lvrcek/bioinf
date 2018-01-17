@@ -23,10 +23,10 @@ int main(int argc, char *argv[]) {
 
     CuckooFilterNew cuckoo;
     std::string file_name = "src/resources/sint11.fa";
-    std::string file_namefp = "src/resources/10sint11.fa";
+    std::string file_namefp = "src/resources/50sint11.fa";
 
     FileReader reader(file_name, file_namefp);
-    reader.ReadSimpleCuckooTable(10, 1000000, &cuckoo);
+    reader.ReadSimpleCuckooTable(50, 1000000, &cuckoo);
 
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
