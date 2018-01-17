@@ -1,3 +1,7 @@
+//
+// Code written by Luka Martinez
+//
+
 #include <iostream>
 #include <bitset>
 #include <sstream>
@@ -18,8 +22,8 @@ int main(int argc, char *argv[]) {
 
 
     CuckooFilterNew cuckoo;
-    std::string file_name = "C:\\Users\\lmartinez\\Desktop\\sint\\sint11.fa";
-    std::string file_namefp = "C:\\Users\\lmartinez\\Desktop\\sint\\10sint11.fa";
+    std::string file_name = "src/resources/sint11.fa";
+    std::string file_namefp = "src/resources/10sint11.fa";
 
     FileReader reader(file_name, file_namefp);
     reader.ReadSimpleCuckooTable(10, 1000000, &cuckoo);
