@@ -55,8 +55,8 @@ public:
      */
 
     ~CuckooFilterNew() {
-        delete (&table);
-        delete (&vector);
+        //delete (&table);
+        //delete (&vector);
     }
 
 
