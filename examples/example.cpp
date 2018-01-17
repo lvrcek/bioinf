@@ -1,3 +1,7 @@
+//
+// Code written by Luka Martinez
+//
+
 #include <iostream>
 #include <bitset>
 #include <sstream>
