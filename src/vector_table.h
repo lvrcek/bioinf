@@ -19,7 +19,7 @@
 
 class TableNew {
 
-    std::vector<std::vector<std::bitset<F>>> *hash_table;
+    std::vector<std::vector<unsigned short>> *hash_table;
 
 public:
 
@@ -29,25 +29,25 @@ public:
      *  hash table.
      */
 
-    explicit TableNew(std::vector<std::vector<std::bitset<F> >> *vector) {
+    explicit TableNew(std::vector<std::vector<unsigned short >> *vector) {
         hash_table = vector;
     }
 
-    std::bitset<F> GetElementFromTable(size_t bucket_index, size_t element_index);
+    unsigned short GetElementFromTable(size_t bucket_index, size_t element_index);
 
-    void SetElementToTable(size_t bucket_index, size_t element_index, std::bitset<F> *element);
+    void SetElementToTable(size_t bucket_index, size_t element_index, unsigned short *element);
 
-    void AddElementToBucket(size_t bucket_index, std::bitset<F> *element);
+    void AddElementToBucket(size_t bucket_index, unsigned short *element);
 
-    void DeleteElementFromBucket(size_t bucket_index, std::bitset<F> *element);
+    void DeleteElementFromBucket(size_t bucket_index, unsigned short *element);
 
     size_t GetBucketSize(size_t bucket_index);
 
-    std::vector<std::bitset<F>> *GetBucket(size_t bucket_index);
+    std::vector<unsigned short> *GetBucket(size_t bucket_index);
 
-    bool ContainsElement(size_t bucket_index_1, size_t bucket_index_2, std::bitset<F> *element);
+    bool ContainsElement(size_t bucket_index_1, size_t bucket_index_2, unsigned short *element);
 
-    bool ContainsElement(size_t bucket_index, std::bitset<F> *element);
+    bool ContainsElement(size_t bucket_index, unsigned short *element);
 
 };
 
@@ -58,7 +58,7 @@ public:
  *  stored at the given position in the table.
  */
 
-std::bitset<F> TableNew::GetElementFromTable(size_t bucket_index, size_t element_index) {
+unsigned short TableNew::GetElementFromTable(size_t bucket_index, size_t element_index) {
     return (*hash_table)[bucket_index][element_index];
 }
 
@@ -69,9 +69,9 @@ std::bitset<F> TableNew::GetElementFromTable(size_t bucket_index, size_t element
  *  fingerprint at the given position in the table.
  */
 
-void TableNew::SetElementToTable(size_t bucket_index, size_t element_index, std::bitset<F> *element) {
-    std::bitset<F> &elem = *element;
-    std::vector<std::vector<std::bitset<F>>> &table = *hash_table;
+void TableNew::SetElementToTable(size_t bucket_index, size_t element_index, unsigned short *element) {
+    unsigned short &elem = *element;
+    std::vector<std::vector<unsigned short>> &table = *hash_table;
     table[bucket_index][element_index] = elem;
 }
 
@@ -81,9 +81,9 @@ void TableNew::SetElementToTable(size_t bucket_index, size_t element_index, std:
  *  in that bucket. Function then pushes the given element to the back of the given bucket. 
  */
 
-void TableNew::AddElementToBucket(size_t bucket_index, std::bitset<F> *element) {
-    std::bitset<F> &elem = *element;
-    std::vector<std::vector<std::bitset<F>>> &table = *hash_table;
+void TableNew::AddElementToBucket(size_t bucket_index, unsigned short *element) {
+    unsigned short &elem = *element;
+    std::vector<std::vector<unsigned short>> &table = *hash_table;
     table[bucket_index].push_back(elem);
 }
 
@@ -93,10 +93,10 @@ void TableNew::AddElementToBucket(size_t bucket_index, std::bitset<F> *element) 
  *  Function then removes the given element from the specified bucket.
  */
 
-void TableNew::DeleteElementFromBucket(size_t bucket_index, std::bitset<F> *element) {
-    std::bitset<F> &elem = *element;
-    std::vector<std::vector<std::bitset<F>>> &table = *hash_table;
-    std::vector<std::bitset<F>> vec = table[bucket_index];
+void TableNew::DeleteElementFromBucket(size_t bucket_index, unsigned short *element) {
+    unsigned short &elem = *element;
+    std::vector<std::vector<unsigned short>> &table = *hash_table;
+    std::vector<unsigned short> vec = table[bucket_index];
     vec.erase(std::remove(vec.begin(), vec.end(), elem), vec.end());
 }
 
@@ -107,7 +107,7 @@ void TableNew::DeleteElementFromBucket(size_t bucket_index, std::bitset<F> *elem
  */
 
 size_t TableNew::GetBucketSize(size_t bucket_index) {
-    std::vector<std::vector<std::bitset<F>>> &table = *hash_table;
+    std::vector<std::vector<unsigned short>> &table = *hash_table;
     return table[bucket_index].size();
 }
 
@@ -117,8 +117,8 @@ size_t TableNew::GetBucketSize(size_t bucket_index) {
  *  the whole bucket at the given index.
  */
 
-std::vector<std::bitset<F>> *TableNew::GetBucket(size_t bucket_index) {
-    std::vector<std::vector<std::bitset<F>>> &table = *hash_table;
+std::vector<unsigned short> *TableNew::GetBucket(size_t bucket_index) {
+    std::vector<std::vector<unsigned short>> &table = *hash_table;
     return &(table[bucket_index]);
 }
 
@@ -129,8 +129,8 @@ std::vector<std::bitset<F>> *TableNew::GetBucket(size_t bucket_index) {
  *  returns true. Otherwise, it returns false.
  */
 
-bool TableNew::ContainsElement(size_t bucket_index_1, size_t bucket_index_2, std::bitset<F> *element) {
-    std::bitset<F> &elem = *element;
+bool TableNew::ContainsElement(size_t bucket_index_1, size_t bucket_index_2, unsigned short *element) {
+    unsigned short &elem = *element;
 
     if (std::find((*GetBucket(bucket_index_1)).begin(), (*GetBucket(bucket_index_1)).end(), elem) !=
         (*GetBucket(bucket_index_1)).end())
@@ -148,8 +148,8 @@ bool TableNew::ContainsElement(size_t bucket_index_1, size_t bucket_index_2, std
  *  it returns true, otherwise it returns false.
  */
 
-bool TableNew::ContainsElement(size_t bucket_index, std::bitset<F> *element) {
-    std::bitset<F> &elem = *element;
+bool TableNew::ContainsElement(size_t bucket_index, unsigned short *element) {
+    unsigned short &elem = *element;
 
     return std::find((*GetBucket(bucket_index)).begin(),
                      (*GetBucket(bucket_index)).end(),

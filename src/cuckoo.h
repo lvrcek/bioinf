@@ -22,13 +22,13 @@ const int maxNumKicks = 500;
 
 class CuckooFilterNew {
 
-    std::vector<std::vector<std::bitset<F>>> vector;
+    std::vector<std::vector<unsigned short>> vector;
     TableNew table = TableNew(nullptr);
 
     //std::bitset<F> fp_storage;
     //std::bitset<F> temp_fp_storage;
 
-    std::hash<std::bitset<F>> hash_fn;
+    std::hash<char> hash_fn;
     std::hash<std::string> hash_str;
 
 public:
@@ -42,7 +42,7 @@ public:
 
     explicit CuckooFilterNew() {
         vector.resize(M);
-        for (int i = M; i--;) {
+        for (int i = 0; i < M; i++) {
             vector[i].reserve(B);
         }
         table = TableNew(&vector);
@@ -62,13 +62,17 @@ public:
 
     //size_t HashFunction(const std::string &word);
 
-    std::bitset<F> Fingerprint(const std::string &word);
+    unsigned short Fingerprint(const std::string &word);
 
     bool InsertEntry(const std::string &word);
 
     bool LookupEntry(const std::string &word);
 
     bool DeleteEntry(const std::string &word);
+
+    size_t HashFingerprint(const unsigned short);
+
+    size_t HashFunction(const std::string &word);
 };
 
 
@@ -91,15 +95,6 @@ size_t CuckooFilterNew::HashFunction(const std::string &word) {
 }
 */
 /*
-size_t CuckooFilterNew::HashFunction(const std::string &word) {
-    int seed = 31;
-    unsigned long hash = 1;
-    for (int i = 0; i < word.length(); i++)
-        hash = (hash * seed) + word[i] * word[i];
-    return hash % M;
-}
-*/
-/*
 size_t CuckooFilterNew::HashFunction(const std::bitset fingerprint) {
     int seed = 31;
     unsigned long hash = 1;
@@ -115,15 +110,35 @@ size_t CuckooFilterNew::HashFunction(const std::bitset fingerprint) {
  *  given string. Size of fingerprint F is specified in constants.h
  */
 
-std::bitset<F> CuckooFilterNew::Fingerprint(const std::string &word) {
-    int seed = 19;
+unsigned short CuckooFilterNew::Fingerprint(const std::string &word) {
+    int seed = 31;
     unsigned long hash = 1;
     for (int i = 0; i<word.length(); i++)
         hash = (hash * seed) + word[i];
-    std::bitset<F> f(hash);
-    return f;
+    hash = hash % (1 << F);
+
+    return (unsigned short) hash;
 }
 
+/*
+ *  A hash function which takes unsigned short as argument and returns
+ *  element of type size_t, which represents hash of fingerprint used
+ *  for getting alternate bucket index.
+ */
+size_t CuckooFilterNew::HashFingerprint(const unsigned short fp) {
+    const int p = 16777619;
+    int hash = (int) 2166136261;
+
+    hash = (hash ^ fp) * p;
+
+    hash += hash << 13;
+    hash ^= hash >> 7;
+    hash += hash << 3;
+    hash ^= hash >> 17;
+    hash += hash << 5;
+    return hash;
+    //return (unsigned short)hash;
+}
 
 /*
  *  A function which takes one argument of type string. First it finds fingerprint
@@ -138,10 +153,10 @@ std::bitset<F> CuckooFilterNew::Fingerprint(const std::string &word) {
  */
 
 bool CuckooFilterNew::InsertEntry(const std::string &word) {
-    std::bitset<F> fp_storage = Fingerprint(word);
+    unsigned short fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
-    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
+    size_t i2 = i1 ^(HashFingerprint(fp_storage) % M);
     if (table.GetBucketSize(i1) < B) {
         table.AddElementToBucket(i1, &fp_storage);
         return true;
@@ -153,10 +168,10 @@ bool CuckooFilterNew::InsertEntry(const std::string &word) {
     size_t i = random == 0 ? i1 : i2;
     for (int n = 0; n < maxNumKicks; n++) {
         random = std::rand() % table.GetBucketSize(i);
-        std::bitset<F> temp_fp_storage = table.GetElementFromTable(i, random);
+        unsigned short temp_fp_storage = table.GetElementFromTable(i, random);
         table.SetElementToTable(i, random, &fp_storage);
         fp_storage = temp_fp_storage;
-        i = i ^ (hash_fn(fp_storage) % M);
+        i = i ^ (HashFingerprint(fp_storage) % M);
         if (table.GetBucketSize(i) < B) {
             table.AddElementToBucket(i, &fp_storage);
             return true;
@@ -174,10 +189,10 @@ bool CuckooFilterNew::InsertEntry(const std::string &word) {
  */
 
 bool CuckooFilterNew::LookupEntry(const std::string &word) {
-    std::bitset<F> fp_storage = Fingerprint(word);
+    unsigned short fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
-    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
+    size_t i2 = i1 ^(HashFingerprint(fp_storage) % M);
     return table.ContainsElement(i1, i2, &fp_storage);
 }
 
@@ -190,10 +205,10 @@ bool CuckooFilterNew::LookupEntry(const std::string &word) {
  */
 
 bool CuckooFilterNew::DeleteEntry(const std::string &word) {
-    std::bitset<F> fp_storage = Fingerprint(word);
+    unsigned short fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
-    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
+    size_t i2 = i1 ^(HashFingerprint(fp_storage) % M);
     if (table.ContainsElement(i1, &fp_storage)) {
         table.DeleteElementFromBucket(i1, &fp_storage);
         return true;
