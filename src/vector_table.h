@@ -1,5 +1,6 @@
 //
-// Created by lmartinez on 13.01.2018..
+// Class implementation written by Lovro Vrcek
+// Functions implementations written by Luka Martinez
 //
 
 #ifndef BIOINF_VECTORTABLE_H
