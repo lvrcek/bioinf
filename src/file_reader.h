@@ -5,10 +5,10 @@
 #ifndef BIOINF_FILEREADER_H
 #define BIOINF_FILEREADER_H
 
-#include "Table.h"
+#include "table.h"
 
-Table *readSimpleCuckooTable(int k, int numEntries);
+Table *ReadSimpleCuckooTable(int k, int num_entries);
 
-Table *readWholeSequence(int k);
+Table *ReadWholeSequence(int k);
 
 #endif //BIOINF_FILEREADER_H

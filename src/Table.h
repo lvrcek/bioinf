@@ -22,27 +22,27 @@ public:
 
     ~Table();
 
-    int getElementFromTable(unsigned int bucketIndex, unsigned int elementIndex);
+    int GetElementFromTable(unsigned int bucket_index, unsigned int element_index);
 
-    void setElementToTable(unsigned int bucket, unsigned int element, int value);
+    void SetElementToTable(unsigned int bucket, unsigned int element, int value);
 
-    std::vector<int> &getHashTable();
+    std::vector<int> &GetHashTable();
 
-    std::vector<int> getBucket(int bucketNum);
+    std::vector<int> GetBucket(int bucket_num);
 
-    size_t getBucketSize(int bucketNum);
+    size_t GetBucketSize(int bucket_num);
 
-    void addElementToBucket(int element, int bucketNum);
+    void AddElementToBucket(int element, int bucket_num);
 
-    void printTableToScreen();
+    void PrintTableToScreen();
 
-    int lookUpEntry(int element, int bucketIndex);
+    int LookUpEntry(int element, int bucket_index);
 
-    void deleteEntry(int element, int bucketIndex);
+    void DeleteEntry(int element, int bucket_index);
 
-    std::vector<int> hashTable;
+    std::vector<int> hash_table;
 
-    saveBucket cheatSheet;
+    SaveBucket cheat_sheet;
 
 };
 

@@ -5,7 +5,7 @@
 #include "Table.h"
 
 
-//saveBucket cheatSheet(4,4);
+//saveBucket cheat_sheet(4,4);
 
 /*
  * A constructor for class Table. Hash table is declared as vector of m vectors of integers.
@@ -14,8 +14,8 @@
  */
 
 
-Table::Table() : cheatSheet(B,F) {
-    this->hashTable.resize(M);
+Table::Table() : cheat_sheet(B,F) {
+    this->hash_table.resize(M);
 };
 
 /*
@@ -29,10 +29,10 @@ Table::~Table() = default;
  *  It returns fingerprint stored at specified bucket and position in bucket (element).
  */
 
-int Table::getElementFromTable(unsigned int bucketIndex, unsigned int elementIndex) {
-    int key=hashTable.at(bucketIndex);
-    std::vector<int> bucket=cheatSheet.get(key);
-    return bucket.at(elementIndex);
+int Table::GetElementFromTable(unsigned int bucket_index, unsigned int element_index) {
+    int key=hash_table.at(bucket_index);
+    std::vector<int> bucket=cheat_sheet.Get(key);
+    return bucket.at(element_index);
 }
 
 /*
@@ -41,9 +41,9 @@ int Table::getElementFromTable(unsigned int bucketIndex, unsigned int elementInd
  */
 
 
-void Table::setElementToTable(unsigned int bucketIndex, unsigned int element, int value) {
-    int key=hashTable.at(bucketIndex);
-    hashTable.at(bucketIndex)=cheatSheet.changeEntry(key,element,value);
+void Table::SetElementToTable(unsigned int bucket_index, unsigned int element, int value) {
+    int key=hash_table.at(bucket_index);
+    hash_table.at(bucket_index)=cheat_sheet.ChangeEntry(key,element,value);
 }
 
 /*
@@ -51,102 +51,50 @@ void Table::setElementToTable(unsigned int bucketIndex, unsigned int element, in
  */
 
 
-std::vector<int> &Table::getHashTable() {
-    return hashTable;
+std::vector<int> &Table::GetHashTable() {
+    return hash_table;
 }
 
 /*
- * Function which has one argument, position of bucket in a hash table (bucketNum)
+ * Function which has one argument, position of bucket in a hash table (bucket_num)
  * and returns bucket which is located at that position in the hash table.
  */
 
 
-std::vector<int> Table::getBucket(int bucketNum) {
-    return cheatSheet.get(hashTable.at(bucketNum));
+std::vector<int> Table::GetBucket(int bucket_num) {
+    return cheat_sheet.Get(hash_table.at(bucket_num));
 }
 
-size_t Table::getBucketSize(int bucketNum) {
-    int key=hashTable.at(bucketNum);
-    int emptyEntries=cheatSheet.countZeroes(key);
-    return (B- emptyEntries);
+size_t Table::GetBucketSize(int bucket_num) {
+    int key=hash_table.at(bucket_num);
+    int empty_entries=cheat_sheet.CountZeroes(key);
+    return (B- empty_entries);
 }
 
-void Table::addElementToBucket(int element, int bucketNum) {
-    int key=hashTable.at(bucketNum);
-    hashTable.at(bucketNum)=cheatSheet.insertEntry(key,element);
+void Table::AddElementToBucket(int element, int bucket_num) {
+    int key=hash_table.at(bucket_num);
+    hash_table.at(bucket_num)=cheat_sheet.InsertEntry(key,element);
 
 }
 
-int Table::lookUpEntry(int element, int bucketIndex){
-    return cheatSheet.lookupEntry(bucketIndex, element);
+int Table::LookupEntry(int element, int bucket_index){
+    return cheat_sheet.LookupEntry(bucket_index, element);
 }
 
-void Table::deleteEntry(int element, int bucketIndex){
-    hashTable.at(bucketIndex)=cheatSheet.deleteEntry(bucketIndex,element);
+void Table::DeleteEntry(int element, int bucket_index){
+    hash_table.at(bucket_index)=cheat_sheet.DeleteEntry(bucket_index,element);
 }
 
 /*
  * Function which prints a hash table to the screen.
  */
 
-void Table::printTableToScreen() {
+void Table::PrintTableToScreen() {
     std::cout <<endl<< "======HASH TABLE=========\n";
-    for (int i =0;i<hashTable.size();i++) {
-        int key=hashTable[i];
-        cheatSheet.printBucket(key);
+    for (int i =0;i<hash_table.size();i++) {
+        int key=hash_table[i];
+        cheat_sheet.PrintBucket(key);
     }
     std::cout << "=========================\n";
 }
-
-
-//
-//int main() {
-//    int myints[] = {0,0,0,15};
-//    Table tablica;
-//
-//    tablica.addElementToBucket(1,100);
-//    tablica.addElementToBucket(1,110);
-//    tablica.addElementToBucket(1,120);
-//    tablica.addElementToBucket(1,130);
-//    tablica.addElementToBucket(1,140);
-//    tablica.addElementToBucket(1,299);
-//    tablica.addElementToBucket(3,299);
-//    tablica.setElementToTable(299,3,5);
-
-
-//    for(int i =0;i<tablica.hashTable.size();i++){
-//        cout<<tablica.hashTable[i]<<std::endl;
-//    }
-//    vector<int> temp=tablica.getBucket(299);
-//    for(int i =0;i<temp.size();i++){
-//        cout<<temp[i]<<" ";
-//    }
-
-    //cout<<tablica.getElementFromTable(299,3);
-
-    //tablica.printTableToScreen();
-
-//    std::vector<int> currentBucket(myints, myints + sizeof(myints) / sizeof(int));
-//    cout<< cheatSheet.findVector(currentBucket)<<" ";
-//    for(int i=0;i<currentBucket.size();i++)
-//        cout<<currentBucket[i]<<" ";
-//    currentBucket=cheatSheet.get(cheatSheet.insertEntry(cheatSheet.findVector(currentBucket),1));
-//    cout<<endl<<cheatSheet.findVector(currentBucket)<<" ";
-//    for(int i=0;i<currentBucket.size();i++)
-//        cout<<currentBucket[i]<<" ";
-//    currentBucket=cheatSheet.get(cheatSheet.insertEntry(cheatSheet.findVector(currentBucket),7));
-//    cout<<endl<<cheatSheet.findVector(currentBucket)<<" ";
-//    for(int i=0;i<currentBucket.size();i++)
-//        cout<<currentBucket[i]<<" ";
-//    currentBucket=cheatSheet.get(cheatSheet.insertEntry(cheatSheet.findVector(currentBucket),8));
-//    cout<<endl<<cheatSheet.findVector(currentBucket)<<" ";
-//    for(int i=0;i<currentBucket.size();i++)
-//        cout<<currentBucket[i]<<" ";
-//    cout<<endl<<cheatSheet.insertEntry(cheatSheet.findVector(currentBucket),5);
-//    cout<<endl<<cheatSheet.deleteEntry(cheatSheet.findVector(currentBucket),8);
-//
-//
-//    //cheatSheet.print();
-//	return 0;
-//}
 

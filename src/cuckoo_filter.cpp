@@ -3,16 +3,16 @@
 #include <sstream>
 #include <set>
 #include <algorithm>
-#include "CuckooFilter.h"
+#include "cuckoo_filter.h"
 
 
 
 /*
  * A hash function which takes a word (string)
  * and returns integer value of bucket in which
- * it's fingerprint will be stored
+ * it's Fingerprint will be stored
  */
-size_t hashFunction(std::string word) {
+size_t HashFunction(std::string word) {
     int seed = 31; //877
     unsigned long hash = 1;
     for (int i = 0; i < word.length(); i++)
@@ -22,12 +22,12 @@ size_t hashFunction(std::string word) {
 
 /*
  * A hash function which taks word (string) as an argument
- * and returns its fingerprint as integer
+ * and returns its Fingerprint as integer
  */
 
 
 //is returning int right?
-std::bitset<F> fingerprint(std::string word) {
+std::bitset<F> Fingerprint(std::string word) {
     int seed = 53; //293
     unsigned long hash = 0;
     for (int i = 0; i < word.length(); i++)
@@ -47,28 +47,28 @@ std::bitset<F> fingerprint(std::string word) {
  * which means that table is (at least almost) full.
  */
 
-bool insertEntry(Table &table, std::string word) {
-    std::bitset<F> f = fingerprint(word);
-    size_t i1 = hashFunction(word);
-    size_t i2 = i1 ^hashFunction(f.to_string());
-    if (table.getBucketSize(i1) < B) {
-        table.addElementToBucket(f.to_ulong(), i1);
+bool IinsertEntry(Table &table, std::string word) {
+    std::bitset<F> f = Fingerprint(word);
+    size_t i1 = HashFunction(word);
+    size_t i2 = i1 ^HashFunction(f.to_string());
+    if (table.GetBucketSize(i1) < B) {
+        table.AddElementToBucket(f.to_ulong(), i1);
         return true;
-    } else if (table.getBucketSize(i2) < B) {
-        table.addElementToBucket(f.to_ulong(), i2);
+    } else if (table.GetBucketSize(i2) < B) {
+        table.AddElementToBucket(f.to_ulong(), i2);
         return true;
     }
     int random = std::rand() % 2;
     size_t i;
     i = random == 0 ? i1 : i2;
-    for (int n = 0; n < MaxNumKicks; n++) {
-        random = std::rand() % table.getBucketSize(i);
-        std::bitset<F> temp(table.getElementFromTable(i, random));
-        table.setElementToTable(i, random, f.to_ulong());
+    for (int n = 0; n < max_num_kicks; n++) {
+        random = std::rand() % table.GetBucketSize(i);
+        std::bitset<F> temp(table.GetElementFromTable(i, random));
+        table.SetElementToTable(i, random, f.to_ulong());
         f = temp;
-        i = i ^ hashFunction(f.to_string());
-        if (table.getBucketSize(i) < B) {
-            table.addElementToBucket(f.to_ulong(), i);
+        i = i ^ HashFunction(f.to_string());
+        if (table.GetBucketSize(i) < B) {
+            table.AddElementToBucket(f.to_ulong(), i);
             return true;
         }
     }
@@ -84,15 +84,15 @@ bool insertEntry(Table &table, std::string word) {
  * case of having two different elements with same hash and same fingerprint.
  */
 
-bool lookupEntry(Table &table, std::string word) {
-    std::bitset<F> f = fingerprint(word);
-    size_t i1 = hashFunction(word);
-    size_t i2 = i1 ^hashFunction(f.to_string());
-    if (std::find(table.getBucket(i1).begin(), table.getBucket(i1).end(), f.to_ulong()) !=
-        table.getBucket(i1).end())
+bool LookupEntry(Table &table, std::string word) {
+    std::bitset<F> f = Fingerprint(word);
+    size_t i1 = HashFunction(word);
+    size_t i2 = i1 ^HashFunction(f.to_string());
+    if (std::find(table.GetBucket(i1).begin(), table.GetBucket(i1).end(), f.to_ulong()) !=
+        table.GetBucket(i1).end())
         return true;
-    if (std::find(table.getBucket(i2).begin(), table.getBucket(i2).end(), f.to_ulong()) !=
-        table.getBucket(i2).end())
+    if (std::find(table.GetBucket(i2).begin(), table.GetBucket(i2).end(), f.to_ulong()) !=
+        table.GetBucket(i2).end())
         return true;
     return false;
 }
@@ -100,26 +100,26 @@ bool lookupEntry(Table &table, std::string word) {
 
 /*
  * A function which takes two arguments: table and word.
- * Similiar to lookup function, but after finding element in
+ * Similar to lookup function, but after finding element in
  * a bucket, it removes that element's fingerprint from that
  * bucket and returns true. If there is no such fingerprint
  * in either bucket, it returns false.
  */
 
-bool deleteEntry(Table &table, std::string word) {
-    std::bitset<F> f = fingerprint(word);
-    size_t i1 = hashFunction(word);
+bool DeleteEntry(Table &table, std::string word) {
+    std::bitset<F> f = Fingerprint(word);
+    size_t i1 = HashFunction(word);
     std::ostringstream convert;
     convert << f;
-    size_t i2 = i1 ^hashFunction(convert.str());
+    size_t i2 = i1 ^HashFunction(convert.str());
     int index = table.lookUpEntry(i1,f.to_ulong());
     if (index!=-1) {
-        table.deleteEntry(f.to_ulong(),i1);
+        table.DeleteEntry(f.to_ulong(),i1);
         return true;
     }
     index = table.lookUpEntry(i2, f.to_ulong());
     if (index!=i2) {
-        table.deleteEntry(f.to_ulong(),i2);
+        table.DeleteEntry(f.to_ulong(),i2);
         return true;
     }
     return false;

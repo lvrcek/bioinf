@@ -6,10 +6,10 @@
 //TODO problem with clion, need to set it to work on unix
 std::string fileName = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
 
-bool assertSimpleCuckooTable(Table &table, int k, int numEntries) {
-    std::ifstream input(fileName);
+bool AssertSimpleCuckooTable(Table &table, int k, int num_entries) {
+    std::ifstream input(file_name);
     if (!input.good()) {
-        std::cout << "Error opening '" << fileName << "'." << std::endl;
+        std::cout << "Error opening '" << file_name << "'." << std::endl;
         return false;
     }
 
@@ -21,13 +21,13 @@ bool assertSimpleCuckooTable(Table &table, int k, int numEntries) {
         if (line[0] == '>') break;
         //std::cout << line <<std::endl;
         content += line;
-        if (content.length() > numEntries + k - 1) break;
+        if (content.length() > num_entries + k - 1) break;
     }
 
     bool success;
-    for (int i = 0; i < numEntries; i++) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
-        success = lookupEntry(table, entry);
+        success = LookupEntry(table, entry);
         if (!success) {
             std::cout << "Error while looking up entry " << i <<". Element "<< entry << " not found." << std::endl;
             return false;
@@ -38,11 +38,11 @@ bool assertSimpleCuckooTable(Table &table, int k, int numEntries) {
     return true;
 }
 
-Table *readSimpleCuckooTable(int k, int numEntries) {
+Table *ReadSimpleCuckooTable(int k, int num_entries) {
 
     std::ifstream input(fileName);
     if (!input.good()) {
-        std::cout << "Error opening '" << fileName << "'." << std::endl;
+        std::cout << "Error opening '" << file_name << "'." << std::endl;
         return new Table(0);
     }
 
@@ -58,21 +58,21 @@ Table *readSimpleCuckooTable(int k, int numEntries) {
         if (line[0] == '>') break;
         //std::cout << line <<std::endl;
         content += line;
-        if (content.length() > numEntries + k - 1) break;
+        if (content.length() > num_entries + k - 1) break;
     }
 
     //std::cerr << content.length() << std::endl;
 
-    if (content.length() - k + 1 < numEntries) {
+    if (content.length() - k + 1 < num_entries) {
         std::cout << "Not enough entries in first sequence! Returning empty table." << std::endl;
         return new Table(0);
     }
 
     auto *table = new Table(M);
     bool success;
-    for (int i = 0; i < numEntries; i++) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
-        success = insertEntry(*table, entry);
+        success = InsertEntry(*table, entry);
         if (!success) {
             std::cout << "Error while inserting entry number " << i << " to table. Returning current table." << std::endl;
             return table;
@@ -85,11 +85,11 @@ Table *readSimpleCuckooTable(int k, int numEntries) {
     return table;
 }
 
-Table *readWholeSequence(int k) {
+Table *ReadWholeSequence(int k) {
 
-    std::ifstream input(fileName);
+    std::ifstream input(file_name);
     if (!input.good()) {
-        std::cout << "Error opening '" << fileName << "'." << std::endl;
+        std::cout << "Error opening '" << file_name << "'." << std::endl;
         return new Table(0);
     }
 
@@ -119,16 +119,16 @@ Table *readWholeSequence(int k) {
 
     auto *table = new Table(M);
     bool success;
-    int entriesAdded = 0;
+    int entries_added = 0;
     for (int i = 0; i < (content.length() - k + 1); i++) {
         std::string entry = content.substr(i, k);
-        success = insertEntry(*table, entry);
+        success = InsertEntry(*table, entry);
         if (!success) {
             std::cout << "Error while inserting to table. Returning current table." << std::endl;
-            std::cout << "Successfully inserted " << entriesAdded << " entries." << std::endl;
+            std::cout << "Successfully inserted " << entries_added << " entries." << std::endl;
             return table;
         } else {
-            entriesAdded++;
+            entries_added++;
         }
     }
 
