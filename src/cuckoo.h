@@ -7,10 +7,11 @@
 
 
 #include <algorithm>
+#include <cstring>
 #include "constants.h"
 #include "vector_table.h"
 
-const int max_num_kicks = 500;
+const int maxNumKicks = 500;
 
 
 /*
@@ -26,6 +27,9 @@ class CuckooFilterNew {
 
     std::bitset<F> fp_storage;
     std::bitset<F> temp_fp_storage;
+
+    std::hash<std::bitset<F>> hash_fn;
+    std::hash<std::string> hash_str;
 
 public:
 
@@ -56,7 +60,7 @@ public:
     }
 
 
-    size_t HashFunction(const std::string &word);
+    //size_t HashFunction(const std::string &word);
 
     std::bitset<F> Fingerprint(const std::string &word);
 
@@ -73,7 +77,20 @@ public:
  *  element of type size_t, which represents in which bucket
  *  fingerprint of element should be stored.
  */
-
+/*
+size_t CuckooFilterNew::HashFunction(const std::string &word) {
+	unsigned long hash = 0xcbf29ce484222325;
+	char *cstr = new char[word.length() + 1];
+	strcpy(cstr, word.c_str());
+	for(char *c = cstr; (*c)!=0; c++) {
+		hash = hash ^ *c;
+		hash = hash * 1099511628211;
+	}
+	delete[] cstr;
+	return hash % M;
+}
+*/
+/*
 size_t CuckooFilterNew::HashFunction(const std::string &word) {
     int seed = 31;
     unsigned long hash = 1;
@@ -81,6 +98,15 @@ size_t CuckooFilterNew::HashFunction(const std::string &word) {
         hash = (hash * seed) + word[i] * word[i];
     return hash % M;
 }
+*/
+/*
+size_t CuckooFilterNew::HashFunction(const std::bitset fingerprint) {
+    int seed = 31;
+    unsigned long hash = 1;
+    for (int i = 0; i < word.length(); i++)
+        hash = (hash * seed) + word[i] * word[i];
+    return hash % M;
+}*/
 
 
 /*
@@ -113,8 +139,9 @@ std::bitset<F> CuckooFilterNew::Fingerprint(const std::string &word) {
 
 bool CuckooFilterNew::InsertEntry(const std::string &word) {
     fp_storage = Fingerprint(word);
-    size_t i1 = HashFunction(word);
-    size_t i2 = i1 ^HashFunction(fp_storage.to_string());
+    //size_t i1 = HashFunction(word);
+    size_t i1 = (hash_str(word) % M);
+    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
     if (table->GetBucketSize(i1) < B) {
         table->AddElementToBucket(i1, fp_storage);
         return true;
@@ -124,12 +151,12 @@ bool CuckooFilterNew::InsertEntry(const std::string &word) {
     }
     int random = std::rand() % 2;
     size_t i = random == 0 ? i1 : i2;
-    for (int n = 0; n < max_num_kicks; n++) {
+    for (int n = 0; n < maxNumKicks; n++) {
         random = std::rand() % table->GetBucketSize(i);
         temp_fp_storage = table->GetElementFromTable(i, random);
         table->SetElementToTable(i, random, fp_storage);
         fp_storage = temp_fp_storage;
-        i = i ^ HashFunction(fp_storage.to_string());
+        i = i ^ (hash_fn(fp_storage) % M);
         if (table->GetBucketSize(i) < B) {
             table->AddElementToBucket(i, fp_storage);
             return true;
@@ -148,8 +175,9 @@ bool CuckooFilterNew::InsertEntry(const std::string &word) {
 
 bool CuckooFilterNew::LookupEntry(const std::string &word) {
     fp_storage = Fingerprint(word);
-    size_t i1 = HashFunction(word);
-    size_t i2 = i1 ^HashFunction(fp_storage.to_string());
+    //size_t i1 = HashFunction(word);
+    size_t i1 = (hash_str(word) % M);
+    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
     return table->ContainsElement(i1, i2, fp_storage);
 }
 
@@ -163,8 +191,9 @@ bool CuckooFilterNew::LookupEntry(const std::string &word) {
 
 bool CuckooFilterNew::DeleteEntry(const std::string &word) {
     fp_storage = Fingerprint(word);
-    size_t i1 = HashFunction(word);
-    size_t i2 = i1 ^HashFunction(fp_storage.to_string());
+    //size_t i1 = HashFunction(word);
+    size_t i1 = (hash_str(word) % M);
+    size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
     if (table->ContainsElement(i1, fp_storage)) {
         table->DeleteElementFromBucket(i1, fp_storage);
         return true;
