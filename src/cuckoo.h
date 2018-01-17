@@ -23,10 +23,10 @@ const int maxNumKicks = 500;
 class CuckooFilterNew {
 
     std::vector<std::vector<std::bitset<F>>> vector;
-    TableNew *table;
+    TableNew table = TableNew(nullptr);
 
-    std::bitset<F> fp_storage;
-    std::bitset<F> temp_fp_storage;
+    //std::bitset<F> fp_storage;
+    //std::bitset<F> temp_fp_storage;
 
     std::hash<std::bitset<F>> hash_fn;
     std::hash<std::string> hash_str;
@@ -45,7 +45,7 @@ public:
         for (int i = M; i--;) {
             vector[i].reserve(B);
         }
-        table = new TableNew(&vector);
+        table = TableNew(&vector);
     }
 
 
@@ -55,7 +55,7 @@ public:
      */
 
     ~CuckooFilterNew() {
-        delete (table);
+        delete (&table);
         delete (&vector);
     }
 
@@ -138,27 +138,27 @@ std::bitset<F> CuckooFilterNew::Fingerprint(const std::string &word) {
  */
 
 bool CuckooFilterNew::InsertEntry(const std::string &word) {
-    fp_storage = Fingerprint(word);
+    std::bitset<F> fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
     size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
-    if (table->GetBucketSize(i1) < B) {
-        table->AddElementToBucket(i1, fp_storage);
+    if (table.GetBucketSize(i1) < B) {
+        table.AddElementToBucket(i1, &fp_storage);
         return true;
-    } else if (table->GetBucketSize(i2) < B) {
-        table->AddElementToBucket(i2, fp_storage);
+    } else if (table.GetBucketSize(i2) < B) {
+        table.AddElementToBucket(i2, &fp_storage);
         return true;
     }
     int random = std::rand() % 2;
     size_t i = random == 0 ? i1 : i2;
     for (int n = 0; n < maxNumKicks; n++) {
-        random = std::rand() % table->GetBucketSize(i);
-        temp_fp_storage = table->GetElementFromTable(i, random);
-        table->SetElementToTable(i, random, fp_storage);
+        random = std::rand() % table.GetBucketSize(i);
+        std::bitset<F> temp_fp_storage = table.GetElementFromTable(i, random);
+        table.SetElementToTable(i, random, &fp_storage);
         fp_storage = temp_fp_storage;
         i = i ^ (hash_fn(fp_storage) % M);
-        if (table->GetBucketSize(i) < B) {
-            table->AddElementToBucket(i, fp_storage);
+        if (table.GetBucketSize(i) < B) {
+            table.AddElementToBucket(i, &fp_storage);
             return true;
         }
     }
@@ -174,11 +174,11 @@ bool CuckooFilterNew::InsertEntry(const std::string &word) {
  */
 
 bool CuckooFilterNew::LookupEntry(const std::string &word) {
-    fp_storage = Fingerprint(word);
+    std::bitset<F> fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
     size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
-    return table->ContainsElement(i1, i2, fp_storage);
+    return table.ContainsElement(i1, i2, &fp_storage);
 }
 
 
@@ -190,16 +190,16 @@ bool CuckooFilterNew::LookupEntry(const std::string &word) {
  */
 
 bool CuckooFilterNew::DeleteEntry(const std::string &word) {
-    fp_storage = Fingerprint(word);
+    std::bitset<F> fp_storage = Fingerprint(word);
     //size_t i1 = HashFunction(word);
     size_t i1 = (hash_str(word) % M);
     size_t i2 = i1 ^ (hash_fn(fp_storage) % M);
-    if (table->ContainsElement(i1, fp_storage)) {
-        table->DeleteElementFromBucket(i1, fp_storage);
+    if (table.ContainsElement(i1, &fp_storage)) {
+        table.DeleteElementFromBucket(i1, &fp_storage);
         return true;
     }
-    if (table->ContainsElement(i2, fp_storage)) {
-        table->DeleteElementFromBucket(i1, fp_storage);
+    if (table.ContainsElement(i2, &fp_storage)) {
+        table.DeleteElementFromBucket(i1, &fp_storage);
 
         return true;
     }

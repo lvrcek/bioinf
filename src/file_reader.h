@@ -17,15 +17,17 @@
 
 class FileReader {
 
-    std::string file_name = "src/resources/Ecoli.fa";
+    std::string file_name = "C:\\Users\\lmartinez\\Projects\\FER\\bioinf\\src\\resources\\Ecoli.fa";
+    std::string fp_file_name = "";
 
 public:
 
-    explicit FileReader(std::string file) {
+    explicit FileReader(std::string file, std::string fpfile) {
         file_name = file;
+        fp_file_name = fpfile;
     }
 
-    bool ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNew *filter);
+    bool ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter);
 };
 
 
@@ -39,7 +41,7 @@ public:
  *  if otherwise.
  */
 
-bool FileReader::ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNew *filter) {
+bool FileReader::ReadSimpleCuckooTable(int k, int num_entries, CuckooFilterNew *filter) {
     std::ifstream input(file_name);
     if (!input.good()) {
         std::cout << "Error opening '" << file_name << "'." << std::endl;
@@ -67,7 +69,7 @@ bool FileReader::ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNe
     }
 
     bool success;
-    for (size_t i = num_entries; i--;) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
         success = filter->InsertEntry(entry);
         if (!success) {
@@ -79,7 +81,7 @@ bool FileReader::ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNe
 
     std::cout << "All entries successfully added to table." << std::endl;
 
-    for (size_t i = num_entries; i--;) {
+    for (int i = 0; i < num_entries; i++) {
         std::string entry = content.substr(i, k);
         success = filter->LookupEntry(entry);
         if (!success) {
@@ -89,6 +91,26 @@ bool FileReader::ReadSimpleCuckooTable(size_t k, int num_entries, CuckooFilterNe
     }
 
     std::cout << "All entries successfully found in table." << std::endl;
+
+    std::ifstream inputFP(fp_file_name);
+    if (!inputFP.good()) {
+        std::cout << "Error opening '" << fp_file_name << "'." << std::endl;
+        return false;
+    }
+
+    int false_positives = 0;
+    int total = 0;
+    while (std::getline(inputFP, line).good()) {
+        if (line[0] == '>') continue;
+        //std::cout << line <<std::endl;
+        success = filter->LookupEntry(line);
+        if (success) {
+            false_positives++;
+        }
+        total++;
+    }
+
+    std::cout << "false positive rate is " << 100.0 * false_positives / total << "%\n";
     return true;
 }
 
