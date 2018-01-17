@@ -1,5 +1,5 @@
 //
-// Created by lmartinez on 13.01.2018..
+// Code written by Lovro Vrcek
 //
 
 #ifndef BIOINF_CUCKOO_H
